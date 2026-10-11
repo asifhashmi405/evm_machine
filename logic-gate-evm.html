@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Electronic Voting Machine - India</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+  :root {
+    --primary: #1a4d8f;
+    --primary-dark: #153d73;
+    --accent: #ff6b35;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    width: 100%;
+    max-width: 1000px;
+    background: linear-gradient(135deg, #1a4d8f 0%, #2a5fa8 100%);
+    color: #fff;
+    padding: 18px 28px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(26,77,143,0.25);
+    flex-wrap: wrap;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+    border-radius: 50%;
+  }
+
+  body.dark .header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  }
+
+  .header .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header .logo-icon {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .header .title-block h1 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .header .title-block p {
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 3px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+  }
+
+  .header-btn.active {
+    background: #fff;
+    color: #1a4d8f;
+    font-weight: 600;
+  }
+
+  /* ===== MAIN CONTAINER ===== */
+  .main-container {
+    width: 100%;
+    max-width: 1000px;
+    background: var(--card);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  /* ===== VERIFY SECTION ===== */
+  .verify-section {
+    padding: 28px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+
+  .section-title {
+    font-size: 13px;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 2px;
+  }
+
+  .verify-input-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+
+  .verify-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 14px 18px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    text-align: center;
+    background: var(--card);
+    color: var(--text);
+    transition: 0.2s;
+    font-weight: 600;
+  }
+
+  .verify-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(26,77,143,0.1);
+  }
+
+  .btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #1a4d8f, #2a5fa8);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(26,77,143,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,77,143,0.4);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: #64748b;
+    color: #fff;
+  }
+  .btn-secondary:hover { background: #475569; transform: translateY(-2px); }
+
+  /* ===== STATUS ===== */
+  .status-message {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    background: var(--bg);
+    color: var(--text-light);
+    border-left: 4px solid #64748b;
+    transition: 0.3s;
+  }
+
+  .status-message.valid {
+    background: #dcfce7;
+    color: #166534;
+    border-left-color: var(--success);
+  }
+
+  body.dark .status-message.valid {
+    background: #14532d;
+    color: #86efac;
+  }
+
+  .status-message.invalid {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left-color: var(--danger);
+  }
+
+  body.dark .status-message.invalid {
+    background: #4c1d1d;
+    color: #fca5a5;
+  }
+
+  .status-message.warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-left-color: #f59e0b;
+  }
+
+  /* ===== VOTER INFO ===== */
+  .voter-info-box {
+    display: none;
+    background: linear-gradient(135deg, #e0ecff, #f0f7ff);
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-top: 15px;
+  }
+
+  body.dark .voter-info-box {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    border-color: #3b82f6;
+  }
+
+  .voter-info-box.active { display: block; animation: fadeIn 0.3s; }
+
+  .voter-info-box .info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #93b4dd;
+  }
+
+  body.dark .voter-info-box .info-row {
+    border-bottom-color: #3b82f6;
+    color: #fff;
+  }
+
+  .voter-info-box .info-row:last-child { border-bottom: none; }
+  .voter-info-box .info-row strong { color: var(--primary); font-weight: 700; }
+  body.dark .voter-info-box .info-row strong { color: #93c5fd; }
+
+  /* ===== FINGERPRINT ===== */
+  .fingerprint-section {
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    margin-top: 15px;
+    display: none;
+  }
+
+  .fingerprint-section.active { display: block; animation: fadeIn 0.3s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fingerprint-icon {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border: 3px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  body.dark .fingerprint-icon {
+    background: linear-gradient(135deg, #334155, #475569);
+  }
+
+  .fingerprint-icon:hover {
+    border-color: var(--primary);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(26,77,143,0.3);
+  }
+
+  .fingerprint-icon.scanning {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  }
+
+  .fingerprint-icon.scanning::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--primary);
+    animation: scanLine 1.5s linear infinite;
+    box-shadow: 0 0 20px var(--primary);
+  }
+
+  @keyframes scanLine {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+
+  .fingerprint-icon.success {
+    border-color: var(--success);
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  }
+
+  body.dark .fingerprint-icon.success {
+    background: linear-gradient(135deg, #14532d, #166534);
+  }
+
+  .fingerprint-status {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 10px;
+  }
+
+  .fingerprint-status.scanning { color: var(--primary); font-weight: 700; }
+  .fingerprint-status.success { color: var(--success); font-weight: 700; }
+
+  /* ===== BALLOT SECTION ===== */
+  .ballot-section {
+    padding: 28px;
+    background: var(--card);
+  }
+
+  .ballot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* ===== CANDIDATE CARD ===== */
+  .candidate-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .candidate-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--party-color, #64748b);
+  }
+
+  .candidate-card:hover:not(.disabled) {
+    border-color: var(--party-color, var(--primary));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+
+  .candidate-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .candidate-card.selected {
+    border-color: var(--success);
+    background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+    animation: voteAnim 0.5s;
+  }
+
+  body.dark .candidate-card.selected {
+    background: linear-gradient(135deg, #14532d, #166534);
+  }
+
+  @keyframes voteAnim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+
+  /* Card header: serial + symbol */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .candidate-serial {
+    background: var(--party-color, var(--primary));
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+  }
+
+  .symbol-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .symbol-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border: 2px solid var(--border);
+  }
+
+  body.dark .symbol-icon {
+    background: linear-gradient(135deg, #334155, #475569);
+  }
+
+  .symbol-name {
+    font-size: 10px;
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--bg);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  body.dark .symbol-name {
+    background: #0f172a;
+  }
+
+  /* Card body: name + party */
+  .candidate-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .candidate-party-tag {
+    display: inline-block;
+    background: var(--party-color, #64748b);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    width: fit-content;
+  }
+
+  /* Vote button */
+  .vote-btn {
+    background: linear-gradient(135deg, #1a4d8f, #2a5fa8);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(26,77,143,0.3);
+    margin-top: auto;
+  }
+
+  .vote-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,77,143,0.4);
+  }
+
+  .vote-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .vote-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  body.dark .vote-btn:disabled {
+    background: #475569;
+  }
+
+  /* NOTA card */
+  .nota-card {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border: 2px dashed #94a3b8;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: 0.3s;
+  }
+
+  body.dark .nota-card {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-color: #475569;
+  }
+
+  .nota-card .symbol-block {
+    flex-shrink: 0;
+  }
+
+  .nota-card .candidate-name {
+    flex: 1;
+  }
+
+  /* ===== RESULT SECTION ===== */
+  .result-section {
+    padding: 28px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+
+  .result-section.active { display: block; animation: fadeIn 0.4s; }
+
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .result-header h3 {
+    font-size: 16px;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+  }
+
+  .count-summary {
+    font-size: 13px;
+    color: var(--text-light);
+    font-family: 'Courier New', monospace;
+    background: var(--card);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+
+  .result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .result-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-left: 5px solid var(--party-color, #64748b);
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .result-item.winner {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-left-color: #f59e0b;
+    box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+  }
+
+  body.dark .result-item.winner {
+    background: linear-gradient(135deg, #78350f, #92400e);
+  }
+
+  .result-symbol {
+    width: 50px;
+    height: 50px;
+    background: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+
+  .result-info {
+    flex: 1;
+  }
+
+  .result-info .candidate-name {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+
+  .result-info .candidate-party-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .result-votes {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .result-votes .vote-count {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    font-family: 'Courier New', monospace;
+  }
+
+  .result-votes .vote-label {
+    font-size: 10px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .winner-badge {
+    display: inline-block;
+    background: #f59e0b;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .result-summary {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--card);
+    border-left: 4px solid var(--primary);
+    font-size: 14px;
+    color: var(--text);
+    border-radius: 10px;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .result-summary .winner-line {
+    font-weight: 700;
+    color: var(--success);
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  /* ===== CONTROL BAR ===== */
+  .control-bar {
+    padding: 18px 28px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .control-bar .btn {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  /* ===== LOG ===== */
+  .log-panel {
+    padding: 18px 28px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  .log-panel h4 {
+    font-size: 11px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .log-entry {
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    padding: 5px 10px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 4px;
+    color: var(--text-light);
+    background: var(--bg);
+    border-radius: 4px;
+  }
+
+  .log-entry.success { border-left-color: var(--success); color: var(--success); }
+  .log-entry.error { border-left-color: var(--danger); color: var(--danger); }
+  .log-entry.warn { border-left-color: #f59e0b; color: #92400e; }
+
+  body.dark .log-entry.success { color: #86efac; }
+  body.dark .log-entry.error { color: #fca5a5; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+    padding: 18px;
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 10px;
+  }
+
+  /* ===== MODAL ===== */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal.active { display: flex; }
+
+  .modal-content {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalIn 0.3s;
+    color: var(--text);
+  }
+
+  @keyframes modalIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-content h3 {
+    color: var(--primary);
+    font-size: 20px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    font-weight: 700;
+  }
+
+  .modal-content p {
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .receipt-box {
+    background: var(--bg);
+    border: 2px dashed var(--success);
+    border-radius: 10px;
+    padding: 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    text-align: left;
+    color: var(--text);
+    line-height: 1.9;
+    margin: 15px 0;
+  }
+
+  .receipt-box strong { color: var(--success); }
+
+  .modal-btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1a4d8f, #2a5fa8);
+    color: #fff;
+    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(26,77,143,0.3);
+  }
+
+  .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,77,143,0.4); }
+
+  /* ===== ADMIN ===== */
+  .admin-input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 6px;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 15px;
+    background: var(--card);
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .admin-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(26,77,143,0.1);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .header { flex-direction: column; text-align: center; }
+    .ballot-grid { grid-template-columns: 1fr; }
+    .candidate-card { padding: 14px; }
+    .symbol-icon { width: 50px; height: 50px; font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-section">
+    <div class="logo-icon">🗳️</div>
+    <div class="title-block">
+      <h1>Electronic Voting Machine - India</h1>
+      <p>General Election 2026 | Booth No: 042</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" id="darkToggle" onclick="toggleDark()">🌙 Dark</button>
+    <button class="header-btn" id="soundToggle" onclick="toggleSound()">🔊 Sound</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-container">
+
+  <!-- VERIFY -->
+  <div class="verify-section">
+    <div class="section-title">Voter Verification</div>
+    <div class="verify-input-row">
+      <input type="text" class="verify-input" id="voterIdInput" placeholder="ENTER VOTER ID" maxlength="8" autocomplete="off">
+      <button class="btn btn-primary" onclick="startVerification()">Verify</button>
+    </div>
+    <div class="status-message" id="statusMessage">Please enter your Voter ID to begin verification.</div>
+
+    <div class="voter-info-box" id="voterInfoBox">
+      <div class="info-row"><span>Voter Name:</span><strong id="infoName">---</strong></div>
+      <div class="info-row"><span>Voter ID:</span><strong id="infoId">---</strong></div>
+      <div class="info-row"><span>Constituency:</span><strong id="infoArea">---</strong></div>
+    </div>
+
+    <div class="fingerprint-section" id="fingerprintSection">
+      <div class="fingerprint-icon" id="fingerprintIcon" onclick="scanFingerprint()">👆</div>
+      <div class="fingerprint-status" id="fingerprintStatus">Click fingerprint to scan</div>
+    </div>
+  </div>
+
+  <!-- BALLOT -->
+  <div class="ballot-section">
+    <div class="section-title">Ballot Paper</div>
+    <div class="ballot-grid" id="ballotGrid"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-section" id="resultSection">
+    <div class="result-header">
+      <h3>Election Result</h3>
+      <span class="count-summary" id="countSummary">Total Votes: 0</span>
+    </div>
+    <div class="result-list" id="resultList"></div>
+    <div class="result-summary" id="resultSummary"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="control-bar">
+    <button class="btn btn-primary" onclick="showResults()">📊 Show Results</button>
+    <button class="btn btn-secondary" onclick="openAdmin()">🔐 Admin Panel</button>
+  </div>
+
+  <!-- LOG -->
+  <div class="log-panel">
+    <h4>System Log</h4>
+    <div id="systemLog">
+      <div class="log-entry success">System initialized successfully.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Electronic Voting Machine v2.1 | For Educational Demonstration
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal" id="receiptModal">
+  <div class="modal-content">
+    <h3>✅ Vote Confirmation</h3>
+    <p>Your vote has been recorded successfully.</p>
+    <div class="receipt-box" id="receiptContent"></div>
+    <button class="modal-btn" onclick="closeModal('receiptModal')">OK</button>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal" id="adminModal">
+  <div class="modal-content">
+    <h3>🔐 Admin Panel</h3>
+    <div id="adminLogin">
+      <p style="color:#64748b;font-size:13px;">Enter admin password</p>
+      <input type="password" class="admin-input" id="adminPassword" placeholder="••••" maxlength="6">
+      <button class="modal-btn" onclick="checkAdmin()">Login</button>
+    </div>
+    <div id="adminControls" style="display:none;">
+      <p style="color:#16a34a;font-size:13px;margin-bottom:15px;font-weight:600;">✅ Authenticated as Admin</p>
+      <button class="modal-btn" style="background:#dc2626;" onclick="resetElection()">🔄 Reset Election</button>
+      <button class="modal-btn" style="background:#6c757d;margin-left:8px;" onclick="closeModal('adminModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+//   VOTER DATABASE
+// ==========================================
+const voterDatabase = {
+  "101": { name: "Rahul Sharma",  area: "North Constituency", fingerprint: "FP101" },
+  "102": { name: "Priya Patel",   area: "South Constituency", fingerprint: "FP102" },
+  "103": { name: "Amit Kumar",    area: "East Constituency",  fingerprint: "FP103" },
+  "104": { name: "Sneha Verma",   area: "West Constituency",  fingerprint: "FP104" },
+  "105": { name: "Vikram Singh",  area: "North Constituency", fingerprint: "FP105" },
+  "201": { name: "Anita Desai",   area: "South Constituency", fingerprint: "FP201" },
+  "202": { name: "Rohit Mehta",   area: "East Constituency",  fingerprint: "FP202" },
+  "203": { name: "Kavita Joshi",  area: "West Constituency",  fingerprint: "FP203" }
+};
+
+const ADMIN_PASSWORD = "1234";
+
+// ==========================================
+//   CANDIDATES - REAL INDIAN PARTIES
+// ==========================================
+const candidates = [
+  { id: "BJP",   sl: "01", name: "Bharatiya Janata Party",           party: "BJP",    symbol: "🪷", symbolName: "Kamal",       votes: 0, color: "#f97316" },
+  { id: "INC",   sl: "02", name: "Indian National Congress",           party: "INC",    symbol: "✋", symbolName: "Haath",       votes: 0, color: "#3b82f6" },
+  { id: "AAP",   sl: "03", name: "Aam Aadmi Party",                    party: "AAP",    symbol: "🧹", symbolName: "Jhaadu",      votes: 0, color: "#22c55e" },
+  { id: "BSP",   sl: "04", name: "Bahujan Samaj Party",                party: "BSP",    symbol: "🐘", symbolName: "Haathi",      votes: 0, color: "#8b5cf6" },
+  { id: "CPIM",  sl: "05", name: "Communist Party of India (Marxist)", party: "CPI(M)", symbol: "⚒️", symbolName: "Hammer",      votes: 0, color: "#dc2626" },
+  { id: "NPP",   sl: "06", name: "National People's Party",            party: "NPP",    symbol: "📖", symbolName: "Kitaab",      votes: 0, color: "#06b6d4" }
+];
+
+const NOTA = { id: "NOTA", sl: "07", name: "NOTA", party: "None of the Above", symbol: "🚫", symbolName: "None", votes: 0, color: "#64748b" };
+
+// ==========================================
+//   STATE
+// ==========================================
+let votedIDs = new Set();
+let currentVoterID = null;
+let currentVoterData = null;
+let voterIDVerified = false;
+let fingerprintVerified = false;
+let totalVotes = 0;
+let soundEnabled = true;
+let darkMode = false;
+
+// ==========================================
+//   LOGIC
+// ==========================================
+function AND(...i) { return i.every(x => x) ? 1 : 0; }
+function NOT(i)    { return i ? 0 : 1; }
+
+// ==========================================
+//   SOUND
+// ==========================================
+function playBeep(type) {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (type === "success") {
+      osc.frequency.value = 800;
+      gain.gain.value = 0.08;
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } else if (type === "error") {
+      osc.frequency.value = 200;
+      gain.gain.value = 0.08;
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    } else {
+      osc.frequency.value = 500;
+      gain.gain.value = 0.05;
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    }
+  } catch(e) {}
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById("soundToggle");
+  btn.textContent = soundEnabled ? "🔊 Sound" : "🔇 Muted";
+  btn.classList.toggle("active", soundEnabled);
+}
+
+function toggleDark() {
+  darkMode = !darkMode;
+  document.body.classList.toggle("dark", darkMode);
+  const btn = document.getElementById("darkToggle");
+  btn.textContent = darkMode ? "☀️ Light" : "🌙 Dark";
+  btn.classList.toggle("active", darkMode);
+}
+
+// ==========================================
+//   RENDER BALLOT (CARD BASED)
+// ==========================================
+function renderBallot() {
+  const grid = document.getElementById("ballotGrid");
+  grid.innerHTML = "";
+
+  candidates.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "candidate-card disabled";
+    card.id = "card-" + c.id;
+    card.style.setProperty("--party-color", c.color);
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="candidate-serial">${c.sl}</div>
+        <div class="symbol-block">
+          <div class="symbol-icon">${c.symbol}</div>
+          <div class="symbol-name">${c.symbolName}</div>
+        </div>
+      </div>
+      <div class="candidate-name">${c.name}</div>
+      <div class="candidate-party-tag" style="background: ${c.color};">${c.party}</div>
+      <button class="vote-btn" id="btn-${c.id}" onclick="castVote('${c.id}')" disabled>VOTE</button>
+    `;
+    grid.appendChild(card);
+  });
+
+  // NOTA card
+  const notaCard = document.createElement("div");
+  notaCard.className = "nota-card";
+  notaCard.id = "card-NOTA";
+  notaCard.innerHTML = `
+    <div class="symbol-block">
+      <div class="symbol-icon">${NOTA.symbol}</div>
+      <div class="symbol-name">NOTA</div>
+    </div>
+    <div>
+      <div class="candidate-name">NOTA</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:3px;">None of the Above</div>
+    </div>
+    <button class="vote-btn" id="btn-NOTA" onclick="castVote('NOTA')" disabled>VOTE</button>
+  `;
+  grid.appendChild(notaCard);
+}
+
+// ==========================================
+//   START VERIFICATION
+// ==========================================
+function startVerification() {
+  const input = document.getElementById("voterIdInput");
+  const id = input.value.trim();
+
+  voterIDVerified = false;
+  fingerprintVerified = false;
+  currentVoterID = null;
+  currentVoterData = null;
+  document.getElementById("voterInfoBox").classList.remove("active");
+  document.getElementById("fingerprintSection").classList.remove("active");
+  resetButtons();
+
+  if (!id) {
+    setStatus("Please enter a Voter ID.", "warning");
+    log("Empty ID submitted", "error");
+    playBeep("error");
+    return;
+  }
+
+  const validID = voterDatabase.hasOwnProperty(id) ? 1 : 0;
+  const alreadyVoted = votedIDs.has(id);
+  const notVoted = NOT(alreadyVoted);
+
+  if (!validID) {
+    setStatus("Invalid Voter ID. Please check and try again.", "invalid");
+    log(`Invalid ID attempt: "${id}"`, "error");
+    playBeep("error");
+    return;
+  }
+
+  if (alreadyVoted) {
+    setStatus(`Voter ${voterDatabase[id].name} has already voted.`, "invalid");
+    log(`Duplicate attempt: ${voterDatabase[id].name}`, "error");
+    playBeep("error");
+    return;
+  }
+
+  voterIDVerified = true;
+  currentVoterID = id;
+  currentVoterData = voterDatabase[id];
+
+  document.getElementById("infoName").textContent = currentVoterData.name;
+  document.getElementById("infoId").textContent = id;
+  document.getElementById("infoArea").textContent = currentVoterData.area;
+  document.getElementById("voterInfoBox").classList.add("active");
+
+  document.getElementById("fingerprintSection").classList.add("active");
+  document.getElementById("fingerprintStatus").textContent = "Click fingerprint to scan";
+  document.getElementById("fingerprintStatus").className = "fingerprint-status";
+  document.getElementById("fingerprintIcon").className = "fingerprint-icon";
+
+  setStatus("Voter ID verified. Please scan your fingerprint.", "valid");
+  log(`Voter ID verified: ${currentVoterData.name}`, "success");
+  playBeep("success");
+
+  input.value = "";
+}
+
+// ==========================================
+//   FINGERPRINT
+// ==========================================
+function scanFingerprint() {
+  if (!voterIDVerified) return;
+
+  const icon = document.getElementById("fingerprintIcon");
+  const status = document.getElementById("fingerprintStatus");
+
+  icon.className = "fingerprint-icon scanning";
+  status.textContent = "Scanning fingerprint...";
+  status.className = "fingerprint-status scanning";
+  playBeep("info");
+
+  log(`Fingerprint scan started for ${currentVoterData.name}`, "info");
+
+  setTimeout(() => {
+    icon.className = "fingerprint-icon success";
+    status.textContent = "Fingerprint matched successfully";
+    status.className = "fingerprint-status success";
+
+    fingerprintVerified = true;
+    enableVotingButtons();
+    setStatus("Fingerprint verified. You may now cast your vote.", "valid");
+    log(`Fingerprint matched: ${currentVoterData.name}`, "success");
+    playBeep("success");
+  }, 1800);
+}
+
+function enableVotingButtons() {
+  candidates.forEach(c => {
+    const btn = document.getElementById("btn-" + c.id);
+    const card = document.getElementById("card-" + c.id);
+    if (btn) btn.disabled = false;
+    if (card) card.classList.remove("disabled");
+  });
+  const notaBtn = document.getElementById("btn-NOTA");
+  if (notaBtn) notaBtn.disabled = false;
+}
+
+function resetButtons() {
+  candidates.forEach(c => {
+    const btn = document.getElementById("btn-" + c.id);
+    const card = document.getElementById("card-" + c.id);
+    if (btn) btn.disabled = true;
+    if (card) card.classList.add("disabled");
+  });
+  const notaBtn = document.getElementById("btn-NOTA");
+  if (notaBtn) notaBtn.disabled = true;
+}
+
+// ==========================================
+//   CAST VOTE
+// ==========================================
+function castVote(candidateId) {
+  if (!AND(voterIDVerified, fingerprintVerified)) {
+    setStatus("Verification incomplete. Please try again.", "invalid");
+    playBeep("error");
+    return;
+  }
+
+  let cand;
+  if (candidateId === "NOTA") {
+    cand = NOTA;
+  } else {
+    cand = candidates.find(c => c.id === candidateId);
+  }
+
+  if (!cand) return;
+
+  const validVoter = AND(voterIDVerified, fingerprintVerified);
+  const notVoted = NOT(votedIDs.has(currentVoterID));
+
+  if (!AND(validVoter, notVoted)) {
+    setStatus("Cannot cast vote. Please re-verify.", "invalid");
+    return;
+  }
+
+  cand.votes++;
+  totalVotes++;
+  votedIDs.add(currentVoterID);
+
+  const card = document.getElementById("card-" + candidateId);
+  if (card) {
+    card.classList.add("selected");
+    setTimeout(() => card.classList.remove("selected"), 1500);
+  }
+
+  showReceipt(currentVoterData.name, currentVoterID, cand.name);
+  log(`Vote recorded: ${currentVoterData.name} → ${cand.party}`, "success");
+  playBeep("success");
+
+  setTimeout(() => resetVoterState(), 500);
+}
+
+// ==========================================
+//   RESET VOTER
+// ==========================================
+function resetVoterState() {
+  voterIDVerified = false;
+  fingerprintVerified = false;
+  currentVoterID = null;
+  currentVoterData = null;
+
+  document.getElementById("voterInfoBox").classList.remove("active");
+  document.getElementById("fingerprintSection").classList.remove("active");
+  document.getElementById("fingerprintIcon").className = "fingerprint-icon";
+  document.getElementById("fingerprintStatus").textContent = "Click fingerprint to scan";
+  document.getElementById("fingerprintStatus").className = "fingerprint-status";
+
+  resetButtons();
+  setStatus("Please enter Voter ID to begin verification.", "");
+}
+
+// ==========================================
+//   STATUS
+// ==========================================
+function setStatus(msg, type) {
+  const el = document.getElementById("statusMessage");
+  el.textContent = msg;
+  el.className = "status-message " + (type || "");
+}
+
+// ==========================================
+//   RECEIPT
+// ==========================================
+function showReceipt(voterName, voterID, voteFor) {
+  const now = new Date();
+  const timeStr = now.toLocaleString('en-IN');
+  const receiptId = "V" + Date.now().toString().slice(-8);
+
+  document.getElementById("receiptContent").innerHTML = `
+    <div><strong>VOTE RECORDED</strong></div>
+    <div>─────────────────────────</div>
+    <div>Receipt No: <strong>${receiptId}</strong></div>
+    <div>Date: ${timeStr}</div>
+    <div>─────────────────────────</div>
+    <div>Voter Name: <strong>${voterName}</strong></div>
+    <div>Voter ID: <strong>${voterID}</strong></div>
+    <div>Vote Cast To: <strong>${voteFor}</strong></div>
+    <div>─────────────────────────</div>
+    <div>Status: <strong>CONFIRMED ✓</strong></div>
+  `;
+
+  document.getElementById("receiptModal").classList.add("active");
+}
+
+// ==========================================
+//   RESULTS
+// ==========================================
+function showResults() {
+  if (totalVotes === 0) {
+    alert("No votes have been recorded yet.");
+    playBeep("error");
+    return;
+  }
+
+  const section = document.getElementById("resultSection");
+  section.classList.add("active");
+
+  const list = document.getElementById("resultList");
+  list.innerHTML = "";
+
+  const all = [...candidates, NOTA];
+  const maxVotes = Math.max(...all.map(c => c.votes));
+  const winners = all.filter(c => c.votes === maxVotes && c.votes > 0);
+
+  all.forEach(c => {
+    const item = document.createElement("div");
+    item.className = "result-item";
+    item.style.setProperty("--party-color", c.color);
+
+    const isWinner = c.votes === maxVotes && winners.length === 1 && c.votes > 0;
+    if (isWinner) item.classList.add("winner");
+
+    item.innerHTML = `
+      <div class="result-symbol">${c.symbol}</div>
+      <div class="result-info">
+        <div class="candidate-name">
+          ${c.name}
+          ${isWinner ? '<span class="winner-badge">🏆 WINNER</span>' : ''}
+        </div>
+        <div class="candidate-party-tag" style="background: ${c.color}; margin-top: 5px;">${c.party}</div>
+      </div>
+      <div class="result-votes">
+        <div class="vote-count">${c.votes}</div>
+        <div class="vote-label">Votes</div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+
+  document.getElementById("countSummary").textContent = "Total Votes: " + totalVotes;
+
+  const summary = document.getElementById("resultSummary");
+  if (winners.length === 1) {
+    summary.innerHTML = `Total votes counted: <strong>${totalVotes}</strong><br>
+      <span class="winner-line">🏆 Winner: ${winners[0].name} with ${winners[0].votes} votes</span>`;
+  } else {
+    summary.innerHTML = `Total votes counted: <strong>${totalVotes}</strong><br>
+      <span style="color:#92400e;font-weight:600;">⚖️ Result: Tie between ${winners.map(w => w.name).join(", ")}</span>`;
+  }
+
+  playBeep("success");
+  section.scrollIntoView({ behavior: "smooth" });
+}
+
+// ==========================================
+//   ADMIN
+// ==========================================
+function openAdmin() {
+  document.getElementById("adminLogin").style.display = "block";
+  document.getElementById("adminControls").style.display = "none";
+  document.getElementById("adminPassword").value = "";
+  document.getElementById("adminModal").classList.add("active");
+}
+
+function checkAdmin() {
+  const pwd = document.getElementById("adminPassword").value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById("adminLogin").style.display = "none";
+    document.getElementById("adminControls").style.display = "block";
+    log("Admin authenticated", "success");
+    playBeep("success");
+  } else {
+    alert("Incorrect password.");
+    log("Failed admin login", "error");
+    playBeep("error");
+  }
+}
+
+function resetElection() {
+  if (!confirm("Are you sure you want to reset the election? All votes will be cleared.")) return;
+
+  candidates.forEach(c => c.votes = 0);
+  NOTA.votes = 0;
+  votedIDs.clear();
+  totalVotes = 0;
+  resetVoterState();
+  document.getElementById("resultSection").classList.remove("active");
+  document.getElementById("voterIdInput").value = "";
+
+  log("Election reset by admin", "warn");
+  closeModal("adminModal");
+  alert("Election has been reset.");
+}
+
+// ==========================================
+//   LOG
+// ==========================================
+function log(msg, type = "info") {
+  const el = document.getElementById("systemLog");
+  const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
+  const entry = document.createElement("div");
+  entry.className = "log-entry " + type;
+  entry.textContent = `[${time}] ${msg}`;
+  el.prepend(entry);
+  while (el.children.length > 20) el.removeChild(el.lastChild);
+}
+
+// ==========================================
+//   MODAL
+// ==========================================
+function closeModal(id) {
+  document.getElementById(id).classList.remove("active");
+}
+
+// ==========================================
+//   INIT
+// ==========================================
+renderBallot();
+
+document.getElementById("voterIdInput").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") startVerification();
+});
+
+document.getElementById("adminPassword").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") checkAdmin();
+});
+</script>
+
+</body>
+</html>
